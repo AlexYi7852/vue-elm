@@ -35,6 +35,9 @@
         <div class="detail-wrapper clearfix">
           <div class="detail-main">
             <h1 class="name">{{seller.name}}</h1>
+            <div class="star-wrapper">
+            <vue-star :size="size" :score="seller.score"></vue-star>
+          </div>
           </div>
         </div>
         <div class="detail-close">
@@ -54,7 +57,9 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import Star from '../star/star.vue'
   export default {
+    components: { 'vue-star': Star },
     props: {
       seller: {
         type: Object
@@ -62,6 +67,7 @@
     },
     data () {
       return {
+        size: 48,
         detailShow: false
       }
     },
@@ -217,7 +223,10 @@
             text-align: center
             font-size: 16px
             font-weight: 700px
-
+          .star-wrapper
+            margin-top: 18px
+            padding: 2px 0px
+            text-align: center
       .detail-close
         position: relative
         width: 32px
