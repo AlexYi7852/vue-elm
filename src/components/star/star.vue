@@ -10,7 +10,14 @@
   const CLS_HALF = 'half'
   const CLS_OFF = 'off'
   export default {
-    props: ['size', 'score'],
+    props: {
+      size: {
+        type: Number
+      },
+      score: {
+        type: Number
+      }
+    },
     computed: {
       starType () {
         return 'star-' + this.size
