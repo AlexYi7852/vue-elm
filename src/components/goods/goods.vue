@@ -13,7 +13,7 @@
     </div>
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
-        <li v-for="item in goods" class="food-list food-list-hook" ref="foodList">
+        <li v-for="item in goods" class="food-list" ref="foodList">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li v-for="food in item.foods" class="food-item" border-1px>
@@ -35,13 +35,17 @@
         </li>
       </ul>
     </div>
+    <vue-shopcart :delivery-price="seller.deliveryPrice"
+                  :min-price="seller.minPrice"></vue-shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
+  import shopCart from '../shopcart/shopcart.vue'
   const ERR_OK = 0
   export default {
+    components: { 'vue-shopcart': shopCart },
     props: {
       seller: {
         type: Object
