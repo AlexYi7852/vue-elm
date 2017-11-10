@@ -30,7 +30,7 @@
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <vue-cartcontrol :food="food"></vue-cartcontrol>
+                  <cartcontrol @add="addFood" :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -38,20 +38,20 @@
         </li>
       </ul>
     </div>
-    <vue-shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
-                  :min-price="seller.minPrice"></vue-shopcart>
+    <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+                  :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
-  import shopCart from '../shopcart/shopcart.vue'
-  import cartControl from '../cartcontrol/cartcontrol.vue'
+  import shopcart from '../shopcart/shopcart.vue'
+  import cartcontrol from '../cartcontrol/cartcontrol.vue'
   const ERR_OK = 0
   export default {
     components: {
-      'vue-shopcart': shopCart,
-      'vue-cartcontrol': cartControl
+      shopcart,
+      cartcontrol
     },
     props: {
       seller: {
@@ -115,6 +115,15 @@
         let foodList = this.$refs.foodList
         let el = foodList[index]
         this.foodsScroll.scrollToElement(el, 300)
+      },
+      addFood (target) {
+        this._drop(target)
+      },
+      _drop (target) {
+        // 体验优化,异步执行下落动画
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target)
+        })
       },
       _initScroll () {
         this.meunScroll = new BScroll(this.$refs.menuWrapper, {
