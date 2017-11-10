@@ -1,45 +1,46 @@
 <template>
-  <div class="goods">
-    <div class="menu-wrapper" ref="menuWrapper">
-      <ul>
-        <li v-for="(item,index) in goods" :class="{'current': currentIndex===index}"
-             @click="selectMenu(index, $event)" class="menu-item" ref="menuList">
+  <div>
+    <div class="goods">
+      <div class="menu-wrapper" ref="menuWrapper">
+        <ul>
+          <li v-for="(item,index) in goods" :class="{'current': currentIndex===index}"
+              @click="selectMenu(index, $event)" class="menu-item" ref="menuList">
           <span class="text border-1px">
             <span class="icon" v-show="item.type > 0" :class="classMap[item.type]"></span>
             {{item.name}}
           </span>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="foods-wrapper" ref="foodsWrapper">
+        <ul>
+          <li v-for="item in goods" class="food-list" ref="foodList">
+            <h1 class="title">{{item.name}}</h1>
+            <ul>
+              <li @click="selectFood(food, $event)" v-for="food in item.foods" class="food-item" border-1px>
+                <div class="icon">
+                  <img width="57" height="57" :src="food.icon">
+                </div>
+                <div class="content">
+                  <h2 class="name">{{food.name}}</h2>
+                  <p class="desc">{{food.description}}</p>
+                  <div class="extra">
+                    <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}</span>
+                  </div>
+                  <price :food="food"></price>
+                  <div class="cartcontrol-wrapper">
+                    <cartcontrol @add="addFood" :food="food"></cartcontrol>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+                :min-price="seller.minPrice"></shopcart>
     </div>
-    <div class="foods-wrapper" ref="foodsWrapper">
-      <ul>
-        <li v-for="item in goods" class="food-list" ref="foodList">
-          <h1 class="title">{{item.name}}</h1>
-          <ul>
-            <li v-for="food in item.foods" class="food-item" border-1px>
-              <div class="icon">
-                <img width="57" height="57" :src="food.icon">
-              </div>
-              <div class="content">
-                <h2 class="name">{{food.name}}</h2>
-                <p class="desc">{{food.description}}</p>
-                <div class="extra">
-                  <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}</span>
-                </div>
-                <div class="price">
-                  <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
-                </div>
-                <div class="cartcontrol-wrapper">
-                  <cartcontrol @add="addFood" :food="food"></cartcontrol>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
-                  :min-price="seller.minPrice"></shopcart>
+    <food @add="addFood" :food="selectedFood" ref="food"></food>
   </div>
 </template>
 
@@ -47,11 +48,16 @@
   import BScroll from 'better-scroll'
   import shopcart from '../shopcart/shopcart.vue'
   import cartcontrol from '../cartcontrol/cartcontrol.vue'
+  import food from '../food/food.vue'
+  import price from '../price/price.vue'
   const ERR_OK = 0
+  const debug = process.env.NODE_ENV !== 'production'
   export default {
     components: {
       shopcart,
-      cartcontrol
+      cartcontrol,
+      food,
+      price
     },
     props: {
       seller: {
@@ -62,7 +68,8 @@
       return {
         goods: [],
         listHeight: [],
-        scrollY: 0
+        scrollY: 0,
+        selectedFood: {}
       }
     },
     computed: {
@@ -89,14 +96,9 @@
       }
     },
     created () {
-      this.classMap = [
-        'decrease',
-        'discount',
-        'guarantee',
-        'invoice',
-        'special'
-      ]
-      this.$http.get('/api/goods').then((response) => {
+      this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+      const url = debug ? '/api/goods' : 'http://ustbhuangyi.com/sell/api/goods'
+      this.$http.get(url).then((response) => {
         response = response.body
         if (response.errno === ERR_OK) {
           this.goods = response.data
@@ -115,6 +117,13 @@
         let foodList = this.$refs.foodList
         let el = foodList[index]
         this.foodsScroll.scrollToElement(el, 300)
+      },
+      selectFood (food, event) {
+        if (!event._constructed) {
+          return
+        }
+        this.selectedFood = food
+        this.$refs.food.show()
       },
       addFood (target) {
         this._drop(target)
@@ -244,17 +253,6 @@
           .extra
             .count
               margin-right: 12px
-          .price
-            font-weight: 700
-            line-height: 24px
-            .now
-              margin-right: 8px
-              font-size: 14px
-              color: rgb(240, 20, 20)
-            .old
-              text-decoration : line-through
-              font-size: 10px
-              color: rgb(147, 153, 159)
           .cartcontrol-wrapper
             position: absolute
             right: 0
