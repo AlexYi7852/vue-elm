@@ -33,6 +33,9 @@
         this.$emit('add', event.target)
       },
       decreaseCart () {
+        if (!event._constructed) {
+          return
+        }
         if (this.food.count) {
           this.food.count--
         }
