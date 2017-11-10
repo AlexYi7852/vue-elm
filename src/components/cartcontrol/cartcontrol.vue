@@ -1,7 +1,11 @@
 <template>
   <div class="cartcontrol">
-    <div class="cart-decrease icon-remove_circle_outline"
-         @click="decreaseCart" v-show="food.count > 0"></div>
+    <transition name="move">
+      <div class="cart-decrease"
+           @click="decreaseCart" v-show="food.count > 0">
+        <span class="inner icon-remove_circle_outline"></span>
+      </div>
+    </transition>
     <div class="cart-count" v-show="food.count > 0">{{food.count}}</div>
     <div class="cart-add icon-add_circle" @click="addCart"></div>
   </div>
@@ -39,12 +43,25 @@
 <style lang="stylus" rel="stylesheet/stylus">
   .cartcontrol
     font-size: 0
-    .cart-decrease, .cart-add
+    .cart-decrease
       display: inline-block
       padding: 6px
-      line-height: 24px
-      font-size: 24px
-      color: rgb(0, 160, 220)
+      opacity: 1
+      transform: translate3D(0, 0, 0)
+      .inner
+        display: inline-block
+        line-height: 24px
+        font-size: 24px
+        color: rgb(0, 160, 220)
+        transition: all 0.5s ease-in-out
+        transform: rotate(0)
+      &.move-enter-active, &.move-leave-active
+        transition: all 0.5s ease-in-out
+      &.move-enter, &.move-leave-active
+        opacity : 0
+        transform: translate3d(24px, 0, 0)
+        .inner
+          transform: rotate(360deg)
     .cart-count
       display: inline-block
       vertical-align : top
@@ -56,5 +73,8 @@
       color: rgb(147, 153, 159)
     .cart-add
       display: inline-block
-
+      padding: 6px
+      line-height: 24px
+      font-size: 24px
+      color: rgb(0, 160, 220)
 </style>
