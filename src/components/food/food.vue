@@ -58,9 +58,9 @@
 <script type="text/ecmascript-6">
   import Vue from 'vue'
   import BScroll from 'better-scroll'
-  import {formatDate} from '../../common/js/date'
   import Split from '../split/split.vue'
   import Price from '../price/price.vue'
+  import {formatDate} from '../../common/js/date'
   import cartControl from '../cartcontrol/cartcontrol.vue'
   import ratingSelect from '../ratingselect/ratingselect.vue'
 

@@ -29,7 +29,7 @@
                   </div>
                   <price :food="food"></price>
                   <div class="cartcontrol-wrapper">
-                    <cartcontrol @add="addFood" :food="food"></cartcontrol>
+                    <cartControl @add="addFood" :food="food"></cartControl>
                   </div>
                 </div>
               </li>
@@ -37,8 +37,8 @@
           </li>
         </ul>
       </div>
-      <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
-                :min-price="seller.minPrice"></shopcart>
+      <shopCart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+                :min-price="seller.minPrice"></shopCart>
     </div>
     <food @add="addFood" :food="selectedFood" ref="food"></food>
   </div>
@@ -46,18 +46,18 @@
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
-  import shopcart from '../shopcart/shopcart.vue'
-  import cartcontrol from '../cartcontrol/cartcontrol.vue'
   import food from '../food/food.vue'
   import price from '../price/price.vue'
+  import shopCart from '../shopcart/shopcart.vue'
+  import cartControl from '../cartcontrol/cartcontrol.vue'
   const ERR_OK = 0
   const debug = process.env.NODE_ENV !== 'production'
   export default {
     components: {
-      shopcart,
-      cartcontrol,
       food,
-      price
+      price,
+      shopCart,
+      cartControl
     },
     props: {
       seller: {
